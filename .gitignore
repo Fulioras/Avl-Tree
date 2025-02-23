@@ -1,0 +1,2 @@
+#exlude local .exe files
+.exe

@@ -25,7 +25,7 @@ void insert(node *root, int data) {
         return;
     }
 
-    
+
 }
 
 

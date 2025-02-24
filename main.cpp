@@ -15,3 +15,17 @@ int main() {
 
     return 0;
 }
+
+void insert(node *root, int data) {
+    if (root == NULL) {
+        root = new node();
+        root->data = data;
+        root->left = NULL;
+        root->right = NULL;
+        return;
+    }
+
+    
+}
+
+

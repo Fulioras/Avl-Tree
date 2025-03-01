@@ -1,31 +1,122 @@
 #include <iostream>
-#include <limits.h>
+#include <algorithm>
 
-
-struct node {
+struct avl_node {
     int data;
-    node *left;
-    node *right;
+    int height = 1;
+    avl_node *left = NULL;
+    avl_node *right = NULL;
+};
+
+
+class Avl_Tree {
+private:
+
+    avl_node *root;
+
+    avl_node* insert_Priv(avl_node* node, int data) {
+
+        /// TRAVERSE UNTIL CORRECT NODE
+        if (node == NULL) {
+            node = new avl_node();
+            node->data = data;
+            return node;
+        }
+        if (data < node->data) {
+            node = insert_Priv(node->left, data);
+        }
+        else if (data > node->data) {
+            node = insert_Priv(node->right, data);
+        }
+        else
+            return node;
+
+        /// From this point on we are updating the avl tree starting with the new leaf up until the root
+        /// UPDATE HEIGHTS
+        node->height = 1 + std::max(height(node->left), height(node->right));
+
+        /// CHECK BALANCE/ROTATE
+        int balance = balance_Factor(node);
+        //need functions for all 4 rotations
+
+        return node;
+
+    }
+
+    int height(avl_node* node) {
+        if (node == NULL)
+            return 0;
+        return node->height;
+    }
+
+    int balance_Factor(avl_node* node) {
+        return height(node->left) - height(node->right);
+    }
+
+    /// ROTATION FUNCTIONS GO HERE!!
+
+    bool search_Priv(avl_node* node, int data) {
+        if(data == node->data) {
+            return true;
+        }
+        else if (data < node->data && node->left != NULL) {
+            return search_Priv(node->left, data);
+        }
+        else if (data > node->data && node->right != NULL) {
+            return search_Priv(node->right, data);
+        }
+        else {
+            return false;
+        }
+    }
+
+    void remove_Priv(avl_node* node, int data) {
+        /// Code goes here
+    }
+
+    void display_Priv(avl_node* node) {
+        if (node != NULL) {
+            display_Priv(node->left);
+            std::cout << node->data << " ";
+            display_Priv(node->right);
+        }
+        else {
+            std::cout << "NLL" << " ";
+        }
+    }
+
+public:
+    Avl_Tree() {
+        root = NULL;
+    }
+
+    void insert( int data) {
+        root = insert_Priv(root, data);
+    }
+
+    bool search(int data) {
+        return search_Priv(root, data);
+    }
+
+    void remove(int data){
+        remove_Priv(root, data);
+    }
+
+    void display() {
+        display_Priv(root);
+    }
 };
 
 
 int main() {
+    Avl_Tree tree;
+    tree.insert(4);
     std::cout << "Hello, World!" << std::endl;
 
 
     return 0;
 }
 
-void insert(node *root, int data) {
-    if (root == NULL) {
-        root = new node();
-        root->data = data;
-        root->left = NULL;
-        root->right = NULL;
-        return;
-    }
 
-
-}
 
 

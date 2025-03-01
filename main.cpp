@@ -1,3 +1,7 @@
+// Written by Augustinas Bickaitis in 2025
+// Code is based on a geeks for geeks article
+// https://www.geeksforgeeks.org/cpp-program-to-implement-avl-tree/
+
 #include <iostream>
 #include <algorithm>
 
@@ -37,6 +41,8 @@ private:
 
         /// CHECK BALANCE/ROTATE
         int balance = balance_Factor(node);
+
+        if(balance > 1 && height(node->left) >= 0) {}
         //need functions for all 4 rotations
 
         return node;
@@ -53,7 +59,32 @@ private:
         return height(node->left) - height(node->right);
     }
 
-    /// ROTATION FUNCTIONS GO HERE!!
+    /// ROTATION FUNCTIONS
+    /// a - left node, b - right node;
+    avl_node* right_Rotate(avl_node* node) {
+        avl_node* a = node->left;
+        avl_node* ab = a->right;
+
+        a->right = node;
+        node->left = ab;
+
+        /// need to update heights
+
+        return a;
+    }
+
+    avl_node* left_Rotate(avl_node* node) {
+        avl_node* b = node->right;
+        avl_node* ba = b->left;
+
+        b->left = node;
+        node->right = ba;
+
+        /// need to update heights
+
+
+        return b;
+    }
 
     bool search_Priv(avl_node* node, int data) {
         if(data == node->data) {

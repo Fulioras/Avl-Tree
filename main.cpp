@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 struct avl_node {
     int data;
@@ -152,9 +153,8 @@ private:
                     node = NULL;
                 }
                 else {
-                    *temp = *node;
+                    *node = *temp;
                 }
-
                 delete temp;
             }
             else {///Two child nodes
@@ -196,7 +196,6 @@ private:
             return right_Rotate(node);
         }
         return node;
-
     }
 
     avl_node* find_Smallest_Node(avl_node* node) {
@@ -211,16 +210,19 @@ private:
 
     void display_Priv(avl_node* node) {
         if (node != NULL) {
-            display_Priv(node->left);
-            std::cout << node->data << " ";
-            display_Priv(node->right);
+            std::cout << node->data << "|" << node->height << "|" << " ";
+
+            if(node->left != NULL)
+                display_Priv(node->left);
+            if(node->right != NULL)
+                display_Priv(node->right);
         }
         else {
-            std::cout << "NLL" << " ";
+            std::cout << "NLL" << std::endl;
         }
-    }
+    }public:
 
-public:
+
     Avl_Tree() {
         root = NULL;
     }
@@ -245,9 +247,41 @@ public:
 
 int main() {
     Avl_Tree tree;
-    tree.insert(4);
-    std::cout << "Hello, World!" << std::endl;
-
+    tree.insert( 3);
+    tree.insert( 8);
+    tree.insert( 10);
+    if(tree.search(3) == true) {
+        std::cout << "FOUND!" << std::endl;
+    }
+    tree.remove( 3);
+    if(tree.search(3)) {
+        std::cout << "FOUND!" << std::endl;
+    }
+    tree.display();
+    std::cout << std::endl;
+    tree.insert( 4);
+    tree.insert( 1);
+    tree.insert( 9);
+    tree.insert( 6);
+    tree.insert(11);
+    tree.insert(12);
+    tree.insert(14);
+    tree.insert( 5);
+    tree.insert( 2);
+    tree.insert(13);
+    tree.insert(15);
+    tree.insert( 3);
+    tree.insert( 7);
+    tree.display();
+    std::cout << std::endl;
+    tree.remove( 12);
+    assert(!tree.search(12));
+    tree.remove(14);
+    assert(!tree.search(14));
+    tree.remove( 2);
+    assert(!tree.search(2));
+    tree.display();
+    std::cout << std::endl;
 
     return 0;
 }

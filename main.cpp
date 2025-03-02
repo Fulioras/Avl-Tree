@@ -125,8 +125,88 @@ private:
         }
     }
 
-    void remove_Priv(avl_node* node, int data) {
-        /// Code goes here
+    avl_node* remove_Priv(avl_node* node, int data) {
+        if(node == NULL) {
+            return node;
+        }
+
+        if(data < node->data) {
+            node->left = remove_Priv(node->left, data);
+        }
+        else if (data > node->data) {
+            node->right = remove_Priv(node->right, data);
+        }
+        else {
+            ///Two Cases:
+            ///one or zero child nodes
+            if(node->left == NULL || node->right == NULL) {
+                avl_node* temp = NULL;
+
+                if(node->left == NULL)
+                    temp = node->right;
+                else
+                    temp = node->left;
+
+                if(temp == NULL) {
+                    temp = node;
+                    node = NULL;
+                }
+                else {
+                    *temp = *node;
+                }
+
+                delete temp;
+            }
+            else {///Two child nodes
+                avl_node* temp = find_Smallest_Node(node->right);
+                node->data = temp->data;
+                node->right = remove_Priv(node->right, node->data);
+            }
+        }
+        if(node == NULL) {
+            return node;
+        }
+
+        /// BALANCING
+        /// From this point on we are updating the avl tree starting with the new leaf up until the root
+        /// UPDATE HEIGHTS
+        node->height = 1 + std::max(height(node->left), height(node->right));
+
+        /// CHECK BALANCE/ROTATE
+        int balance = balance_Factor(node);
+
+
+        /// ROTATIONS
+        if(balance > 1 && balance_Factor(node->left) >= 0) {
+            //LEFT
+            return left_Rotate(node);
+        }
+        if(balance > 1 && balance_Factor(node->left) < 0) {
+            //RIGHT LEFT
+            node->left = right_Rotate(node->left);
+            return left_Rotate(node);
+        }
+        if(balance < -1 && balance_Factor(node->right) < 0) {
+            //RIGHT
+            return right_Rotate(node);
+        }
+        if(balance < -1 && balance_Factor(node->right) >= 0) {
+            //LEFT RIGHT
+            node->right = left_Rotate(node->right);
+            return right_Rotate(node);
+        }
+        return node;
+
+    }
+
+    avl_node* find_Smallest_Node(avl_node* node) {
+        if(node->left == NULL) {
+            return node;
+        }
+        else {
+            node = find_Smallest_Node(node->left);
+        }
+        return node;
     }
 
     void display_Priv(avl_node* node) {
@@ -154,7 +234,7 @@ public:
     }
 
     void remove(int data){
-        remove_Priv(root, data);
+        root = remove_Priv(root, data);
     }
 
     void display() {

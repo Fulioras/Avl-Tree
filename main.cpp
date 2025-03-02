@@ -27,10 +27,10 @@ private:
             return node;
         }
         if (data < node->data) {
-            node = insert_Priv(node->left, data);
+            node->left = insert_Priv(node->left, data);
         }
         else if (data > node->data) {
-            node = insert_Priv(node->right, data);
+            node->right = insert_Priv(node->right, data);
         }
         else
             return node;
@@ -42,9 +42,26 @@ private:
         /// CHECK BALANCE/ROTATE
         int balance = balance_Factor(node);
 
-        if(balance > 1 && height(node->left) >= 0) {}
-        //need functions for all 4 rotations
 
+        /// ROTATIONS
+        if(balance > 1 && balance_Factor(node->left) >= 0) {
+            //LEFT
+            return left_Rotate(node);
+        }
+        if(balance > 1 && balance_Factor(node->left) < 0) {
+            //RIGHT LEFT
+            node->left = right_Rotate(node->left);
+            return left_Rotate(node);
+        }
+        if(balance < -1 && balance_Factor(node->right) < 0) {
+            //RIGHT
+            return right_Rotate(node);
+        }
+        if(balance < -1 && balance_Factor(node->right) >= 0) {
+            //LEFT RIGHT
+            node->right = left_Rotate(node->right);
+            return right_Rotate(node);
+        }
         return node;
 
     }
@@ -61,27 +78,34 @@ private:
 
     /// ROTATION FUNCTIONS
     /// a - left node, b - right node;
-    avl_node* right_Rotate(avl_node* node) {
-        avl_node* a = node->left;
+
+    /// Balances when tree is left-heavy
+    avl_node* left_Rotate(avl_node* node) {
+        avl_node* a = node->left; //needs height check 2)
         avl_node* ab = a->right;
 
-        a->right = node;
-        node->left = ab;
+        a->right = node; //needs height check 1)
+        a->right->left = ab;
 
-        /// need to update heights
+
+        ///update heights
+        (a->right)->height = std::max(height((a->right)->left), height((a->right)->right)) + 1; //1)
+        a->height = std::max(height(a->left), height(a->right)) + 1; //2)
 
         return a;
     }
 
-    avl_node* left_Rotate(avl_node* node) {
-        avl_node* b = node->right;
+    /// Balances when tree is right-heavy
+    avl_node* right_Rotate(avl_node* node) {
+        avl_node* b = node->right; //needs height check 2)
         avl_node* ba = b->left;
 
-        b->left = node;
-        node->right = ba;
+        b->left = node; //needs height check 1)
+        b->left->right = ba;
 
-        /// need to update heights
-
+        ///update heights
+        (b->left)->height = std::max(height((b->left)->left), height((b->left)->right)) + 1; //1)
+        b->height = std::max(height(b->left), height(b->right)) + 1; //2)
 
         return b;
     }
